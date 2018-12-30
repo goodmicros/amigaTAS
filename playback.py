@@ -5,7 +5,6 @@ import sys
 import time
 
 TAS = serial.Serial(sys.argv[1], baudrate = 115200)
-eventcount = 0
 
 #just read the whole file into memory?
 with open('./output', 'r') as f:
