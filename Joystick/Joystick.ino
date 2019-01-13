@@ -10,6 +10,15 @@ int mode = MIRROR;
 #define FIREA 4
 #define FIREB 5
 
+#include "Joystick.h"
+
+Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID,JOYSTICK_TYPE_JOYSTICK,
+  2, 0,                  // Button Count, Hat Switch Count
+  true, true, false,     // X and Y, but no Z Axis
+  false, false, false,   // No Rx, Ry, or Rz
+  false, false,          // No rudder or throttle
+  false, false, false);  // No accelerator, brake, or steering
+  
 int joystickPins[BUTTONS]={
   A0, //Up
   A1, //Down
@@ -41,6 +50,9 @@ void setup() {
   if(!digitalRead(joystickPins[FIREA]))
     mode = TAS;
 
+  Joystick.setXAxisRange(-1,1);
+  Joystick.setYAxisRange(-1,1);
+  Joystick.begin(false);
   Serial.begin(115200);
 }
 
@@ -68,4 +80,11 @@ void loop() {
   //update output
   for(int i = 0; i< BUTTONS; i++)
     digitalWrite(consolePins[i], ((~output>>i) & 1));
+
+  //update output for joystick
+  Joystick.setXAxis(-1*((~output>>LEFT)&1)+1*((~output>>RIGHT)&1));
+  Joystick.setYAxis(-1*((~output>>UP)&1)+1*((~output>>DOWN)&1));
+  Joystick.setButton(0,(~output>>FIREA)&1);
+  Joystick.setButton(1,(~output>>FIREB)&1);
+  Joystick.sendState();
 }
