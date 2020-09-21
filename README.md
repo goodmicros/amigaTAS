@@ -39,4 +39,13 @@ All joystick input is sent over serial as a single byte (active low): [0, 0, FIR
 
 # Notes
 
+### Configuration
 A separate configuration button should be added in order to avoid using the reset button unnecessarily. for example hot-swapping TAS mode when playing as an USB joystick can cause problems.
+
+### Reading inputs
+Currently all input is passed through the MCU, this causes a ~100 µs delay. Perhaps the input should be passed through directly and have the MCU just monitor the signals and pull them down when needed.  
+Also, the input should be configured in the same port so the pins can be read directly with PINn.
+
+### Timing
+Time should be indicated in frames instead of seconds. Optionally sub-frame timing could be indicated with a decimal value.  
+Unfortunately arduino doesn't really seem to like interrupts and counting frames without them is unnecessarily complicated.
